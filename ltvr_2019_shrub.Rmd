@@ -1,0 +1,59 @@
+---
+title: "LTVR 2019 point framer shrubs"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Load the library "read_excel" to import multiple excel sheets into in R.
+```{r echo=T,results='hide' , include=TRUE, message=FALSE }
+library("tidyverse")
+library("readxl")  
+```
+
+# Read data.
+```{r}
+file<-"/Users/owner/Downloads/LTVR_2019_PF_shrubs.xlsx"
+# Name of the sheets
+shrub<-excel_sheets(file)
+shrub
+```
+
+# WBS site
+```{r}
+wbs<-read_excel( file , sheet =  "WBS_core_shrubs" )
+wbs<-wbs[!is.na(wbs$Stem_Diameter),]
+#for (i in c(1:max(wbs$Stem_Count))){  print(i)}
+#wbs %>% separate(Stem_Diameter)
+head(wbs)
+```
+
+# The basal area of a shrub is the sum of the cross-sectional areas of stems.
+```{r}
+#shrub w only one stem
+wbs_stem1<-wbs[wbs$Stem_Count==1,]
+wbs_stem1$Stem_Diameter<-as.numeric(wbs_stem1$Stem_Diameter)
+#wbs_stem1$max_crown_stem<- wbs_stem1$Stem_Diameter^2/wbs_stem1$Max_Diam^2
+#wbs_stem1$min_crown_stem<- wbs_stem1$Stem_Diameter^2/wbs_stem1$Min_Diam^2
+#summary(wbs_stem1)
+```
+
+# Fit to the curve y = ax+b, where y is Stem_Diameter^2 and x is crown area.
+```{r}
+max_crown_area<-wbs_stem1$Max_Diam^2
+min_crown_area<-wbs_stem1$Min_Diam^2
+stem_area<-wbs_stem1$Stem_Diameter^2
+
+ggplot( wbs_stem1, aes( x= max_crown_area, y= stem_area) ) + 
+geom_point( ) +
+geom_smooth(method=lm)
+
+summary(lm( stem_area~ max_crown_area))
+
+ggplot( wbs_stem1, aes( x= min_crown_area, y= stem_area) ) + 
+geom_point( ) +
+geom_smooth(method=lm)
+
+summary(lm( stem_area~ min_crown_area))
+```
