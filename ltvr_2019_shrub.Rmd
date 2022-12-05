@@ -57,3 +57,21 @@ geom_smooth(method=lm)
 
 summary(lm( stem_area~ min_crown_area))
 ```
+
+# Relationship between stem diameter versus crown diameter
+```{r}
+ggplot( wbs_stem1 , aes( x= Max_Diam, y= Stem_Diameter) ) + 
+geom_point( ) +
+geom_smooth(method=lm)
+
+summary(lm(  wbs_stem1$Stem_Diameter~ wbs_stem1$Max_Diam))
+
+ggplot( wbs_stem1 , aes( x= Max_Diam, y= Stem_Diameter) ) + 
+geom_point( ) +
+geom_smooth(method=lm)
+
+summary(lm(  wbs_stem1$Stem_Diameter~ wbs_stem1$Max_Diam))
+
+```
+
+
