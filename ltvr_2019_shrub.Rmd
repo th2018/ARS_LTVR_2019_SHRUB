@@ -14,7 +14,8 @@ library("readxl")
 
 # Read data.
 ```{r}
-file<-"/Users/owner/Downloads/LTVR_2019_PF_shrubs.xlsx"
+#file<-"/Users/owner/Downloads/LTVR_2019_PF_shrubs.xlsx"
+file<-"C:/Users/taohuang/Downloads/LTVR_2019_PF_shrubs.xlsx"
 # Name of the sheets
 shrub<-excel_sheets(file)
 shrub
@@ -27,6 +28,15 @@ wbs<-wbs[!is.na(wbs$Stem_Diameter),]
 #for (i in c(1:max(wbs$Stem_Count))){  print(i)}
 #wbs %>% separate(Stem_Diameter)
 head(wbs)
+```
+
+# LOS
+```{r}
+los<-read_excel( file , sheet =  "LOS_core_shrubs" )
+los<-los[!is.na(los$Stem_Diameter),]
+#for (i in c(1:max(los$Stem_Count))){  print(i)}
+#los %>% separate(Stem_Diameter)
+head(los)
 ```
 
 # The basal area of a shrub is the sum of the cross-sectional areas of stems.
@@ -58,20 +68,38 @@ geom_smooth(method=lm)
 summary(lm( stem_area~ min_crown_area))
 ```
 
-# Relationship between stem diameter versus crown diameter
+# Relationship between stem diameter versus crown diameter (WBS)
 ```{r}
 ggplot( wbs_stem1 , aes( x= Max_Diam, y= Stem_Diameter) ) + 
 geom_point( ) +
-geom_smooth(method=lm)
+geom_smooth(method=lm)+ 
+xlab("Max crown diameter")
 
 summary(lm(  wbs_stem1$Stem_Diameter~ wbs_stem1$Max_Diam))
 
-ggplot( wbs_stem1 , aes( x= Max_Diam, y= Stem_Diameter) ) + 
+ggplot( wbs_stem1 , aes( x= Min_Diam, y= Stem_Diameter) ) + 
 geom_point( ) +
-geom_smooth(method=lm)
+geom_smooth(method=lm)+ 
+xlab("Min crown diameter")
 
-summary(lm(  wbs_stem1$Stem_Diameter~ wbs_stem1$Max_Diam))
+summary(lm(  wbs_stem1$Stem_Diameter~ wbs_stem1$Min_Diam))
 
 ```
 
+# Relationship between stem diameter versus crown diameter (los)
+```{r}
+ggplot( los_stem1 , aes( x= Max_Diam, y= Stem_Diameter) ) + 
+geom_point( ) +
+geom_smooth(method=lm)+ 
+xlab("Max crown diameter")
+
+summary(lm(  los_stem1$Stem_Diameter~ los_stem1$Max_Diam))
+
+ggplot( los_stem1 , aes( x= Min_Diam, y= Stem_Diameter) ) + 
+geom_point( ) +
+geom_smooth(method=lm)+ 
+xlab("Min crown diameter")
+
+summary(lm(  los_stem1$Stem_Diameter~ los_stem1$Min_Diam))
+```
 
